@@ -127,6 +127,7 @@ const main = async () => {
               {
                 name: "Price",
                 value: `₹${product.offers.Sale_price}`,
+                inline: true,
               },
               {
                 name: "Buy Now",
