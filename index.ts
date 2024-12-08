@@ -72,11 +72,15 @@ const main = async () => {
           `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
           {
             chat_id: telegramChatId,
-            text: `${productData[0].name} is out of stock for ${ProductGrade.Superb} grade.`,
+            text: `${productData[0].name.split("-")[0]} is out of stock for ${
+              ProductGrade.Superb
+            } grade.`,
           }
         ),
         axios.post(discordWebhookUrl, {
-          content: `${productData[0].name} is out of stock for ${ProductGrade.Superb} grade.`,
+          content: `${productData[0].name.split("-")[0]} is out of stock for ${
+            ProductGrade.Superb
+          } grade.`,
         }),
       ]);
       return;
