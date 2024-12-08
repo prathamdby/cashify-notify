@@ -40,6 +40,7 @@ const main = async () => {
           p.offers.availability === ProductAvailability.InStock
       )
       .map((product) => ({
+        image: product.image,
         name: product.name,
         description: product.description,
         color: product.color,
@@ -119,6 +120,62 @@ const main = async () => {
       });
 
     await Promise.all([...productMessages, ...targetPriceMessages]);
+
+    const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    if (!discordWebhookUrl) {
+      console.error("DISCORD_WEBHOOK_URL is not set in the .env file.");
+      return;
+    }
+
+    const discordMessages = responseData.map((product) => {
+      return axios.post(discordWebhookUrl, {
+        content: null,
+        embeds: [
+          {
+            title: "Product Details",
+            color: 4245430,
+            fields: [
+              {
+                name: "Name",
+                value: product.name.split("-")[0],
+              },
+              {
+                name: "Description",
+                value: product.description.split(",")[2],
+              },
+              {
+                name: "Grade",
+                value: product.grade,
+                inline: true,
+              },
+              {
+                name: "Color",
+                value: product.color,
+                inline: true,
+              },
+              {
+                name: "Price",
+                value: `₹${product.offers.Sale_price}`,
+              },
+              {
+                name: "Buy Now",
+                value: `[Link](${product.offers.url})`,
+              },
+            ],
+            footer: {
+              text: "Cashify",
+            },
+            timestamp: new Date().toISOString(),
+            image: {
+              url: product.image,
+            },
+          },
+        ],
+        attachments: [],
+      });
+    });
+
+    await Promise.all(discordMessages);
   } catch (error) {
     console.error("Failed to fetch the product page:", error);
   }

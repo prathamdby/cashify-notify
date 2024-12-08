@@ -44,6 +44,7 @@ export interface MerchantReturnPolicy {
 }
 
 export interface ResponseProductData {
+  image: string;
   name: string;
   description: string;
   color: string;
