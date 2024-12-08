@@ -1,0 +1,32 @@
+name: Scheduled Job
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Bun
+        run: curl -fsSL https://bun.sh/install | bash
+
+      - name: Set up Bun
+        run: |
+          export BUN_INSTALL="/home/runner/.bun"
+          export PATH="$BUN_INSTALL/bin:$PATH"
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run the script
+        run: bun run index.ts
+        env:
+          CASHIFY_PRODUCT_URL: ${{ secrets.CASHIFY_PRODUCT_URL }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          CASHIFY_TARGET_PRICE: ${{ secrets.CASHIFY_TARGET_PRICE }}
+          TELEGRAM_TARGET_USERNAME: ${{ secrets.TELEGRAM_TARGET_USERNAME }}
