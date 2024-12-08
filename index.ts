@@ -71,24 +71,13 @@ const main = async () => {
       return;
     }
 
-    const targetPrice = process.env.CASHIFY_TARGET_PRICE;
-    if (!targetPrice) {
-      console.error("CASHIFY_TARGET_PRICE is not set in the .env file.");
-      return;
-    }
-
-    const telegramTargetUsername = process.env.TELEGRAM_TARGET_USERNAME;
-    if (!telegramTargetUsername) {
-      console.error("TELEGRAM_TARGET_USERNAME is not set in the .env file.");
-      return;
-    }
-
     const productMessages = responseData.map((product) => {
       return axios.post(
-        `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
+        `https://api.telegram.org/bot${telegramBotToken}/sendPhoto`,
         {
           chat_id: telegramChatId,
-          text: `<b>Product Details:</b>\nName: ${
+          photo: product.image,
+          caption: `<b>Product Details:</b>\nName: ${
             product.name.split("-")[0]
           }\nGrade: ${product.grade}\nColor: ${product.color}\nDescription: ${
             product.description.split(",")[2]
@@ -101,25 +90,7 @@ const main = async () => {
       );
     });
 
-    const targetPriceMessages = responseData
-      .filter((product) => product.offers.Sale_price === targetPrice)
-      .map((product) => {
-        return axios.post(
-          `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
-          {
-            chat_id: telegramChatId,
-            text: `@${telegramTargetUsername} Price of <b>${
-              product.name.split("-")[0]
-            }</b> is equal to the target price of <b>₹${targetPrice}</b>. <a href="${
-              product.offers.url
-            }">View Product</a>`,
-            parse_mode: "HTML",
-            disable_web_page_preview: true,
-          }
-        );
-      });
-
-    await Promise.all([...productMessages, ...targetPriceMessages]);
+    await Promise.all(productMessages);
 
     const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
     if (!discordWebhookUrl) {
@@ -166,7 +137,7 @@ const main = async () => {
               text: "Cashify",
             },
             timestamp: new Date().toISOString(),
-            image: {
+            thumbnail: {
               url: product.image,
             },
           },

@@ -23,6 +23,4 @@ jobs:
           CASHIFY_PRODUCT_URL: ${{ secrets.CASHIFY_PRODUCT_URL }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          CASHIFY_TARGET_PRICE: ${{ secrets.CASHIFY_TARGET_PRICE }}
-          TELEGRAM_TARGET_USERNAME: ${{ secrets.TELEGRAM_TARGET_USERNAME }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

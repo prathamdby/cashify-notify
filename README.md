@@ -23,8 +23,6 @@ bun run index.ts
 The project relies on the following environment variables:
 
 - `CASHIFY_PRODUCT_URL`: The URL of the Cashify product page to monitor.
-- `CASHIFY_TARGET_PRICE`: The target price for which to send special notifications.
 - `TELEGRAM_BOT_TOKEN`: The token for the Telegram bot used for sending notifications.
 - `TELEGRAM_CHAT_ID`: The chat ID of the Telegram chat where notifications will be sent.
-- `TELEGRAM_TARGET_USERNAME`: The username of the Telegram user to mention in special notifications.
 - `DISCORD_WEBHOOK_URL`: The URL of the Discord webhook used for sending product notifications.
