@@ -60,14 +60,25 @@ const main = async () => {
       return;
     }
 
+    const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    if (!discordWebhookUrl) {
+      console.error("DISCORD_WEBHOOK_URL is not set in the .env file.");
+      return;
+    }
+
     if (responseData.length === 0) {
-      await axios.post(
-        `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
-        {
-          chat_id: telegramChatId,
-          text: "No product found with specified filters.",
-        }
-      );
+      await Promise.all([
+        axios.post(
+          `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
+          {
+            chat_id: telegramChatId,
+            text: `${productData[0].name} is out of stock for ${ProductGrade.Superb} grade.`,
+          }
+        ),
+        axios.post(discordWebhookUrl, {
+          content: `${productData[0].name} is out of stock for ${ProductGrade.Superb} grade.`,
+        }),
+      ]);
       return;
     }
 
@@ -89,14 +100,6 @@ const main = async () => {
         }
       );
     });
-
-    await Promise.all(productMessages);
-
-    const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
-    if (!discordWebhookUrl) {
-      console.error("DISCORD_WEBHOOK_URL is not set in the .env file.");
-      return;
-    }
 
     const discordMessages = responseData.map((product) => {
       return axios.post(discordWebhookUrl, {
@@ -147,6 +150,7 @@ const main = async () => {
       });
     });
 
+    await Promise.all(productMessages);
     await Promise.all(discordMessages);
   } catch (error) {
     console.error("Failed to fetch the product page:", error);
